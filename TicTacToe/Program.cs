@@ -12,15 +12,15 @@ namespace TicTacToe
         static int choosennumber;
         static int player = 1;
         static int checkwinner;
-        static bool playagain = true;
+        static bool play = true;
         static string answer;
 
         static void Main(string[] args)
         {
             Console.Title = ("Tic Tac Toe");
-            while (playagain)
+            while (play)
             {
-                initialize();
+                InitializeValues();
                 checkwinner = 0;
 
                 while (checkwinner == 0)
@@ -38,22 +38,34 @@ namespace TicTacToe
                         Console.WriteLine("Spelare 1 tur!");
                     }
 
-                    choosennumber = ReadNumber("Välj en position: ");
+                    try
+                    {
+                        choosennumber = ReadNumber("Välj en position: ");
 
-                    while (board[choosennumber] == "X" || board[choosennumber] == "O")
-                    {
-                        choosennumber = ReadNumber("Position är redan vald: ");
-                    }
+                        while (choosennumber < 0 && choosennumber > 10)
+                        {
+                            choosennumber = ReadNumber("Positionerna är 1-9");
+                        }
 
-                    if (player % 2 == 0)
-                    {
-                        board[choosennumber] = "O";
-                        player -= 1;
+                        while (board[choosennumber] == "X" || board[choosennumber] == "O")
+                        {
+                            choosennumber = ReadNumber("Position är redan vald: ");
+                        }
+
+                        if (player % 2 == 0)
+                        {
+                            board[choosennumber] = "O";
+                            player -= 1;
+                        }
+                        else
+                        {
+                            board[choosennumber] = "X";
+                            player += 1;
+                        }
                     }
-                    else
+                    catch (IndexOutOfRangeException)
                     {
-                        board[choosennumber] = "X";
-                        player += 1;
+                        Console.WriteLine("Enbart siffror mellan 1-9 är tillåtna");
                     }
 
                     checkwinner = CheckWin();
@@ -68,48 +80,50 @@ namespace TicTacToe
                         {
                             player = 2;
                         }
-                        Console.Clear();
-                        Console.WriteLine("Spelare 1: X mot Spelare 2: O");
-                        GameBoard();
-                        Console.WriteLine("Spelare {0} vann", player);
-                        Console.WriteLine("Play again Y/N?");
-                        answer = Console.ReadLine();
-
-                        if (answer.ToUpper() == "Y")
-                        {
-                            playagain = true;
-                        }
-                        else
-                        {
-                            playagain = false;
-                            Environment.Exit(0);
-                        }
+                        Result("Vinnare är Spelare ", player);
+                        PlayAgain();
                     }
                     else if (checkwinner == 2)
                     {
-                        Console.Clear();
-                        Console.WriteLine("Spelare 1: X vs Spelare 2: O");
-                        GameBoard();
-                        Console.WriteLine("Lika!");
-                        Console.WriteLine("Play again Y/N?");
-                        answer = Console.ReadLine();
-
-                        if (answer.ToUpper() == "Y")
-                        {
-                            playagain = true;
-                        }
-                        else
-                        {
-                            playagain = false;
-                            Environment.Exit(0);
-                        }
+                        Result("Lika!");
+                        PlayAgain();
                     }
-
                 }
             }
         }
 
-        static void initialize() 
+        static void Result(string msg, int player = 0)
+        {
+            Console.Clear();
+            Console.WriteLine("Spelare 1: X mot Spelare 2: O");
+            GameBoard();
+            if (player > 0)
+            { 
+                Console.WriteLine(msg + player);
+            }
+            else
+            {
+                Console.WriteLine(msg);
+            }
+        }
+
+        static void PlayAgain()
+        {
+            Console.WriteLine("Spela igen J/N?");
+            answer = Console.ReadLine();
+
+            if (answer.ToUpper() == "J")
+            {
+                play = true;
+            }
+            else
+            {
+                play = false;
+                Environment.Exit(0);
+            }
+        }
+
+        static void InitializeValues() 
         {
             for (int i = 0; i < board.Length; i++)
             {
@@ -184,9 +198,13 @@ namespace TicTacToe
                 var input = Console.ReadLine();
 
                 if (Int32.TryParse(input, out value))
+                {
                     return value;
-
-                Console.WriteLine("Not a valid integer.");
+                }
+                else
+                {
+                    Console.WriteLine("Var vänlig skriv in en siffra.");
+                }
             }
         }
     }
