@@ -87,7 +87,7 @@ namespace TicTacToe
                         {
                             player = 2;
                         }
-                        Result("Vinnare är spelare ", player);
+                        Result("Vinnaren är spelare ", player);
                         PlayAgain();
                     }
                     else if (checkwinner == 2)
@@ -146,7 +146,17 @@ namespace TicTacToe
                 for(int j = 0; j < column; j++)
                 {
                     var number = column * i + j + 1;
-                    Console.Write(" " + board[number] + " |");
+                    if (board[number] == "X")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                    }
+                    else if (board[number] == "O")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
+                    Console.Write(" " + board[number]);
+                    Console.ResetColor();
+                    Console.Write(" |");
                 }
                 Console.WriteLine();
                 Console.WriteLine("___|___|___|");
